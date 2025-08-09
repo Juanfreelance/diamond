@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TheDiamond Effect</title>
+    <style>
+        .auth-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            background-color: rgba(0,0,0,0.8);
+        }
+
+        .auth-form {
+            background-color: rgba(0, 60, 100, 0.5);
+            padding: 30px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 150, 255, 0.5);
+        }
+
+        .auth-form h2 {
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #00aaff;
+        }
+
+        .auth-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid rgba(0, 180, 255, 0.7);
+            border-radius: 5px;
+            background-color: rgba(0, 30, 60, 0.7);
+            color: white;
+        }
+
+        .auth-form button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            background-color: rgba(0, 120, 255, 0.3);
+            color: white;
+            border: 1px solid rgba(0, 180, 255, 0.7);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .auth-form button:hover {
+            background-color: rgba(0, 150, 255, 0.5);
+        }
+
+        .error-message {
+            color: #ff5555;
+            margin: 10px 0;
+            font-size: 0.9rem;
+            text-align: center;
+            text-shadow: 0 0 5px rgba(255,0,0,0.3);
+        }
+
+        .auth-toggle {
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        .auth-toggle a {
+            color: #00aaff;
+            text-decoration: none;
+        }
+
+        .auth-toggle a:hover {
+            text-decoration: underline;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 20px;
+        }
+
+        .diamond {
+            width: 150px;
+            height: 150px;
+            transform: rotate(45deg);
+            background: linear-gradient(135deg, rgba(0,212,255,0.8) 0%, rgba(9,9,121,0.8) 50%, rgba(0,212,255,0.8) 100%);
+            box-shadow: 
+                0 0 20px #007ff,
+                0 0 40px #00aaff,
+                0 0 60px #00ffff;
+            animation: pulse 2s infinite ease-in-out;
+            z-index: 2;
+        }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background-color: rgba(0, 180, 255, 0.7);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 10;
+            background-color: rgba(0, 30, 60, 0.7);
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 150, 255, 0.5);
+            border: 1px solid rgba(0, 180, 255, 0.3);
+        }
+
+        .main-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .admin-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .controls button {
+            background-color: rgba(0, 120, 255, 0.3);
+            color: white;
+            border: 1px solid rgba(0, 180, 255, 0.7);
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        button:hover {
+            background-color: rgba(0, 150, 255, 0.5);
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: rotate(45deg) scale(1);
+                box-shadow: 
+                    0 0 20px #0077ff,
+                    0 0 40px #00aaff,
+                    0 0 60px #00ffff;
+            }
+            50% {
+                transform: rotate(45deg) scale(1.1);
+                box-shadow: 
+                    0 0 30px #0077ff,
+                    0 0 60px #00aaff,
+                    0 0 90px #00ffff;
+            }
+            100% {
+                transform: rotate(45deg) scale(1);
+                box-shadow: 
+                    0 0 20px #0077ff,
+                    0 0 40px #00aaff,
+                    0 0 60px #00ffff;
+            }
+        }
+
+        .title {
+            color: white;
+            font-size: 2rem;
+            text-shadow: 0 0 10px #00aaff;
+            z-index: 10;
+            text-align: center;
+        }
+
+        .admin-panel {
+            position: absolute;
+            top: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 30, 60, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-height: 60%;
+            overflow-y: auto;
+            z-index: 20;
+            color: white;
+            display: none;
+        }
+
+        .user-list {
+            margin-top: 10px;
+        }
+
+        .user-item {
+            padding: 8px;
+            border-bottom: 1px solid rgba(0, 180, 255, 0.3);
+        }
+
+        .instructions {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            text-align: center;
+            z-index: 10;
+            max-width: 80%;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container" id="authContainer">
+        <div class="auth-form">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <input type="text" placeholder="Username" required>
+                <input type="password" placeholder="Password" required>
+                <div class="error-message" id="loginError"></div>
+                <button type="submit">Login</button>
+            </form>
+            <p class="auth-toggle">Don't have an account? <a href="#" id="showRegister">Register</a></p>
+        </div>
+
+        <div class="auth-form" id="registerForm" style="display:none">
+            <h2>Register</h2>
+            <form>
+                <input type="text" placeholder="Username" required>
+                <input type="email" placeholder="Email" required>
+                <input type="password" placeholder="Password" required>
+                <input type="password" placeholder="Confirm Password" required>
+                <div class="error-message" id="registerError"></div>
+                <button type="submit">Register</button>
+            </form>
+            <p class="auth-toggle">Already have an account? <a href="#" id="showLogin">Login</a></p>
+        </div>
+    </div>
+
+    <div class="container" id="mainContent" style="display:none">
+        <div class="title">TheDiamond</div>
+        <div class="diamond" id="diamond"></div>
+        <div class="instructions">Click and drag to move TheDiamond. Press buttons below to change effects.</div>
+        <div class="admin-panel" id="adminPanel">
+            <h3>Registered Users</h3>
+            <div class="user-list" id="userList"></div>
+        </div>
+        <div class="particles" id="particles"></div>
+        
+        <div class="controls">
+            <div class="main-controls">
+                <button id="changeColor">Color</button>
+                <button id="addParticles">Particles</button>
+                <button id="reset">Reset</button>
+            </div>
+            <div class="admin-controls">
+                <button id="adminPanelBtn" style="display:none">Admin</button>
+                <button id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Authentication Logic
+        const authContainer = document.getElementById('authContainer');
+        const mainContent = document.getElementById('mainContent');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const showRegister = document.getElementById('showRegister');
+        const showLogin = document.getElementById('showLogin');
+
+        showRegister.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelector('.auth-form').style.display = 'none';
+            registerForm.style.display = 'block';
+        });
+
+        showLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            registerForm.style.display = 'none';
+            document.querySelector('.auth-form').style.display = 'block';
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            authContainer.style.display = 'none';
+            mainContent.style.display = 'block';
+        });
+
+        // Storage for users
+        let users = [
+            {username: 'admin', password: 'admin123', email: 'admin@example.com', isAdmin: true}
+        ];
+        let currentUser = null;
+
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = e.target[0].value;
+            const email = e.target[1].value;
+            const password = e.target[2].value;
+            const confirmPassword = e.target[3].value;
+            const errorElement = document.getElementById('registerError');
+            
+            errorElement.textContent = '';
+            
+            if(!username || !email || !password || !confirmPassword) {
+                errorElement.textContent = 'Please fill in all fields';
+                return;
+            }
+            
+            if(password !== confirmPassword) {
+                errorElement.textContent = 'Passwords do not match';
+                return;
+            }
+            
+            if(users.some(u => u.username === username)) {
+                errorElement.textContent = 'Username already exists';
+                return;
+            }
+            
+            users.push({
+                username,
+                email,
+                password,
+                isAdmin: false
+            });
+            
+            currentUser = users.find(u => u.username === username);
+            authContainer.style.display = 'none';
+            mainContent.style.display = 'block';
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = e.target[0].value;
+            const password = e.target[1].value;
+            const errorElement = document.getElementById('loginError');
+            
+            errorElement.textContent = '';
+            
+            if(!username || !password) {
+                errorElement.textContent = 'Please fill in all fields';
+                return;
+            }
+            
+            const user = users.find(u => u.username === username && u.password === password);
+            if(user) {
+                currentUser = user;
+                authContainer.style.display = 'none';
+                mainContent.style.display = 'block';
+                
+                // Show admin panel button if admin
+                if(user.isAdmin) {
+                    document.getElementById('adminPanelBtn').style.display = 'block';
+                }
+            } else {
+                errorElement.textContent = 'Invalid username or password';
+            }
+        });
+
+        const diamond = document.getElementById('diamond');
+        const particles = document.getElementById('particles');
+        const changeColorBtn = document.getElementById('changeColor');
+        const addParticlesBtn = document.getElementById('addParticles');
+        const resetBtn = document.getElementById('reset');
+        
+        let isDragging = false;
+        let currentX, currentY;
+        let particleCount = 0;
+        const maxParticles = 100;
+        let colorIndex = 0;
+        const colors = [
+            'rgba(0,212,255,0.8)', // Blue
+            'rgba(255,0,212,0.8)', // Pink
+            'rgba(212,255,0,0.8)', // Yellow
+            'rgba(0,255,212,0.8)'  // Teal
+        ];
+        const shadowColors = [
+            ['#0077ff', '#00aaff', '#00ffff'], // Blue
+            ['#ff00aa', '#ff00ff', '#ffaaff'], // Pink
+            ['#ff9900', '#ffff00', '#ffff99'], // Yellow
+            ['#00ffaa', '#00ffff', '#aaffff']  // Teal
+        ];
+
+        // Drag functionality
+        diamond.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            currentX = e.clientX - diamond.offsetLeft;
+            currentY = e.clientY - diamond.offsetTop;
+            diamond.style.cursor = 'grabbing';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            diamond.style.left = (e.clientX - currentX) + 'px';
+            diamond.style.top = (e.clientY - currentY) + 'px';
+            
+            // Create particles while dragging
+            if (particleCount < maxParticles && Math.random() > 0.7) {
+                createParticle(e.clientX, e.clientY);
+                particleCount++;
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            diamond.style.cursor = 'grab';
+        });
+
+        // Touch support
+        diamond.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            const touch = e.touches[0];
+            currentX = touch.clientX - diamond.offsetLeft;
+            currentY = touch.clientY - diamond.offsetTop;
+            e.preventDefault();
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            
+            const touch = e.touches[0];
+            diamond.style.left = (touch.clientX - currentX) + 'px';
+            diamond.style.top = (touch.clientY - currentY) + 'px';
+            
+            // Create particles while dragging
+            if (particleCount < maxParticles && Math.random() > 0.7) {
+                createParticle(touch.clientX, touch.clientY);
+                particleCount++;
+            }
+            e.preventDefault();
+        });
+
+        document.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+
+        function createParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            const size = Math.random() * 10 + 5;
+            const duration = Math.random() * 3 + 2;
+            
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${x - size/2}px`;
+            particle.style.top = `${y - size/2}px`;
+            particle.style.opacity = '1';
+            particle.style.animation = `float ${duration}s linear forwards`;
+            
+            // Keyframes for floating animation
+            const keyframes = `
+                @keyframes float {
+                    to {
+                        transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 150}px);
+                        opacity: 0;
+                    }
+                }
+            `;
+            
+            // Add keyframes
+            const style = document.createElement('style');
+            style.innerHTML = keyframes;
+            document.head.appendChild(style);
+            
+            particles.appendChild(particle);
+            
+            // Remove after animation
+            setTimeout(() => {
+                particle.remove();
+                style.remove();
+                particleCount--;
+            }, duration * 1000);
+        }
+
+        // Change color
+        changeColorBtn.addEventListener('click', () => {
+            colorIndex = (colorIndex + 1) % colors.length;
+            
+            diamond.style.background = `linear-gradient(135deg, ${colors[colorIndex]} 0%, rgba(9,9,121,0.8) 50%, ${colors[colorIndex]} 100%)`;
+            diamond.style.boxShadow = `
+                0 0 20px ${shadowColors[colorIndex][0]},
+                0 0 40px ${shadowColors[colorIndex][1]},
+                0 0 60px ${shadowColors[colorIndex][2]}
+            `;
+        });
+
+        // Add particles
+        addParticlesBtn.addEventListener('click', () => {
+            const rect = diamond.getBoundingClientRect();
+            const centerX = rect.left + rect.width/2;
+            const centerY = rect.top + rect.height/2;
+            
+            for (let i = 0; i < 20 && particleCount < maxParticles; i++) {
+                createParticle(
+                    centerX + (Math.random() * 40 - 20),
+                    centerY + (Math.random() * 40 - 20)
+                );
+                particleCount++;
+            }
+        });
+
+        // Reset
+        resetBtn.addEventListener('click', () => {
+            diamond.style.left = '50%';
+            diamond.style.top = '50%';
+            diamond.style.transform = 'translate(-50%, -50%) rotate(45deg)';
+            colorIndex = 0;
+            diamond.style.background = 'linear-gradient(135deg, rgba(0,212,255,0.8) 0%, rgba(9,9,121,0.8) 50%, rgba(0,212,255,0.8) 100%)';
+            diamond.style.boxShadow = `
+                0 0 20px #0077ff,
+                0 0 40px #00aaff,
+                0 0 60px #00ffff
+            `;
+            
+            // Clear all particles
+            particles.innerHTML = '';
+            particleCount = 0;
+        });
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            currentUser = null;
+            mainContent.style.display = 'none';
+            authContainer.style.display = 'flex';
+            document.getElementById('adminPanelBtn').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'none';
+        });
+
+        // Admin panel functionality
+        document.getElementById('adminPanelBtn').addEventListener('click', () => {
+            const adminPanel = document.getElementById('adminPanel');
+            const userList = document.getElementById('userList');
+            
+            adminPanel.style.display = adminPanel.style.display === 'block' ? 'none' : 'block';
+            
+            if(adminPanel.style.display === 'block') {
+                userList.innerHTML = users
+                    .map(user => `
+                        <div class="user-item">
+                            <strong>${user.username}</strong> (${user.email}) 
+                            ${user.isAdmin ? '<span style="color:#00aaff">[Admin]</span>' : ''}
+                        </div>
+                    `)
+                    .join('');
+            }
+        });
+
+        // Initial position
+        diamond.style.position = 'absolute';
+        diamond.style.left = '50%';
+        diamond.style.top = '50%';
+        diamond.style.transform = 'translate(-50%, -50%) rotate(45deg)';
+    </script>
+</body>
+</html>
